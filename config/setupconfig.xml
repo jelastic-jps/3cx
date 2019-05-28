@@ -73,7 +73,7 @@
     </option>
     <option>
       <code>DnsSuffix</code> <!--This option needs to be selected in NeedFqdn is yes. List of available suffixes per Domain Group can be found on:https://activation.3cx.com/apiv2/domains Skip if need fqdn is NO. -->
-      <answer>eu</answer>
+      <answer>19</answer>
     </option>
     <option>
       <code>FullExternalFqdn</code><!--This should be populated if NeedFqdn = "no". -->
