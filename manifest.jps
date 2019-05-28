@@ -1,0 +1,55 @@
+typon: 1.5
+id: 3cxpbx
+baseUrl: https://raw.githubusercontent.com/jelastic-jps/3cx/master
+description:
+  text: /text/description.md
+  short: 3cx PBX
+
+logo: /images/logo.png
+name: 3cx Private Branch Exchange
+targetRegions:
+  type: vz7
+
+globals:
+  password: ${fn.password(20)}
+
+settings:
+  fields:
+  - type: string
+    name: serial
+    caption: 3CX Serial 
+    default: 0000-1111-2222-3333
+
+nodes:
+- cloudlets: 16
+  nodeGroup: cp
+  image: farfui/3cx:16.0.0.1581
+  extip: true
+
+onInstall:
+  - getConfig
+  - processConfig
+  - install3cxpbx
+
+actions:
+  getConfig:
+    cmd [cp]: |-
+    wget  ${baseUrl}/config/setupconfig.xml -O /etc/3cxpbx/setupconfig.xml
+  
+
+  processConfig:
+    cmd [cp]: |-
+    sed 's/SERIAL/${settings.start}/g' /etc/3cxpbx/setupconfig.xml
+    sed 's/DOMAIN/${env.domain}/g' /etc/3cxpbx/setupconfig.xml
+    sed 's/PASSWORD/${globals.password}/g' /etc/3cxpbx/setupconfig.xml
+    sed 's/HOSTNAME/${env.domain}/g' /etc/3cxpbx/setupconfig.xml
+    sed 's/FQDN/${env.domain}/g' /etc/3cxpbx/setupconfig.xml 
+
+
+  install3cxpbx:
+    cmd [cp]: |-
+    /usr/sbin/3CXWizard --cleanup
+      
+
+
+success: /texts/success.md
