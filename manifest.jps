@@ -1,4 +1,5 @@
-typon: 1.5
+type: install
+version: 1.5
 id: 3cxpbx
 baseUrl: https://raw.githubusercontent.com/jelastic-jps/3cx/master
 description:
@@ -25,6 +26,8 @@ nodes:
   nodeGroup: cp
   image: farfui/3cx:16.0.0.1581
   extip: true
+  env:
+    JELASTIC_EXPOSE: 5001
 
 onInstall:
   - getConfig
@@ -34,22 +37,21 @@ onInstall:
 actions:
   getConfig:
     cmd [cp]: |-
-    wget  ${baseUrl}/config/setupconfig.xml -O /etc/3cxpbx/setupconfig.xml
-  
+     mkdir /etc/3cxpbx
+     sed -i -re '/mesg n \|\| true/d' /root/.profile && echo 'if `tty -s`; then  mesg n ; fi' >>/root/.profile
+     wget  ${baseUrl}/config/setupconfig.xml -O /etc/3cxpbx/setupconfig.xml
 
   processConfig:
     cmd [cp]: |-
-    sed 's/SERIAL/${settings.start}/g' /etc/3cxpbx/setupconfig.xml
-    sed 's/DOMAIN/${env.domain}/g' /etc/3cxpbx/setupconfig.xml
-    sed 's/PASSWORD/${globals.password}/g' /etc/3cxpbx/setupconfig.xml
-    sed 's/HOSTNAME/${env.domain}/g' /etc/3cxpbx/setupconfig.xml
-    sed 's/FQDN/${env.domain}/g' /etc/3cxpbx/setupconfig.xml 
-
+     sed -i 's/SERIAL/${settings.serial}/g' /etc/3cxpbx/setupconfig.xml
+     sed -i 's/DOMAIN/${env.domain}/g' /etc/3cxpbx/setupconfig.xml
+     sed -i 's/PASSWORD/${globals.password}/g' /etc/3cxpbx/setupconfig.xml
+     sed -i 's/HOSTNAME/${env.domain}/g' /etc/3cxpbx/setupconfig.xml
+     sed -i 's/FQDN/${env.domain}/g' /etc/3cxpbx/setupconfig.xml 
 
   install3cxpbx:
     cmd [cp]: |-
-    /usr/sbin/3CXWizard --cleanup
-      
+     /usr/sbin/3CXWizard --cleanup
 
 
-success: /texts/success.md
+success: /text/success.md
