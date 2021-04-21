@@ -24,7 +24,7 @@ settings:
 nodes:
 - cloudlets: 16
   nodeGroup: cp
-  image: farfui/3cx:16.0.0.1581
+  image: farfui/3cx:16.0.8.9
   extip: true
   env:
     JELASTIC_EXPOSE: 5001
